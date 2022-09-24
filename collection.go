@@ -49,6 +49,15 @@ func (c *Collection[V]) Diff(items []V) *Collection[V] {
 	return cNew
 }
 
+func (c *Collection[V]) ForEach(iteratee func(value V, key int)) *Collection[V] {
+	itemsL := len(c.items)
+	for idx := 0; idx < itemsL; idx++ {
+		iteratee(c.items[idx], idx)
+	}
+
+	return c
+}
+
 func (c *Collection[V]) ForEachRight(iteratee func(value V, key int)) *Collection[V] {
 	for idx := len(c.items) - 1; 0 <= idx; idx-- {
 		iteratee(c.items[idx], idx)
@@ -65,7 +74,7 @@ func (c *Collection[V]) Map(iteratee func(value V, key int) V) *Collection[V] {
 }
 
 func (c *Collection[V]) Filter(predicate func(value V, k int) bool) *Collection[V] {
-	var cNew = &Collection[V]{items: make([]V, len(c.items))}
+	var cNew = &Collection[V]{items: []V{}}
 	for k, v := range c.items {
 		if !predicate(v, k) {
 			continue
