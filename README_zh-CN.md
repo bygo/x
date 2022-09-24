@@ -2,7 +2,7 @@
 
 # X
 
-🔨 一个如 `Laravel Collection` 或 `Lodash.js` 的工具
+🔨 一个如 `Laravel Collection` 或 `Lodash.js` 的工具集
 
 ## 安装
 

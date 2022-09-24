@@ -2,7 +2,7 @@
 
 # X
 
-🔨 A tool like `Laravel Collection` or `lodash.js`
+🔨 Tools like `Laravel Collection` or `lodash.js`
 
 ## Installation
 
