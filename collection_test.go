@@ -270,10 +270,9 @@ func TestCollection_ForEachRight(t *testing.T) {
 
 func TestCollection_Map(t *testing.T) {
 	type Args[V comparable] struct {
-		name    string
-		items   []V
-		want    []V
-		wantKey []V
+		name  string
+		items []V
+		want  []V
 	}
 
 	for _, tt := range []Args[int]{
@@ -299,10 +298,9 @@ func TestCollection_Map(t *testing.T) {
 
 func TestCollection_Filter(t *testing.T) {
 	type Args[V comparable] struct {
-		name    string
-		items   []V
-		want    []V
-		wantKey []V
+		name  string
+		items []V
+		want  []V
 	}
 
 	for _, tt := range []Args[int]{
@@ -318,6 +316,164 @@ func TestCollection_Filter(t *testing.T) {
 			}).ToSlice()
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Collect().Filter() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCollection_ToSlice(t *testing.T) {
+	type Args[V comparable] struct {
+		name  string
+		items []V
+		want  []V
+	}
+
+	for _, tt := range []Args[int]{
+		{
+			name:  "Int_1",
+			items: []int{1, 2, 3},
+			want:  []int{1, 2, 3},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Collect(tt.items).ToSlice()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect().ToSlice() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCollection_Chunk(t *testing.T) {
+	type Args[V comparable] struct {
+		name  string
+		size  int
+		items []V
+		want  [][]V
+	}
+
+	for _, tt := range []Args[int]{
+		{
+			name:  "Int_1",
+			size:  1,
+			items: []int{1, 2, 3, 4, 5},
+			want:  [][]int{{1}, {2}, {3}, {4}, {5}},
+		},
+		{
+			name:  "Int_2",
+			size:  2,
+			items: []int{1, 2, 3, 4, 5},
+			want:  [][]int{{1, 2}, {3, 4}, {5}},
+		},
+		{
+			name:  "Int_3",
+			size:  3,
+			items: []int{1, 2, 3, 4, 5},
+			want:  [][]int{{1, 2, 3}, {4, 5}},
+		},
+		{
+			name:  "Int_4",
+			size:  4,
+			items: []int{1, 2, 3, 4, 5},
+			want:  [][]int{{1, 2, 3, 4}, {5}},
+		},
+		{
+			name:  "Int_5",
+			size:  5,
+			items: []int{1, 2, 3, 4, 5},
+			want:  [][]int{{1, 2, 3, 4, 5}},
+		},
+		{
+			name:  "Int_6",
+			size:  6,
+			items: []int{1, 2, 3, 4, 5},
+			want:  [][]int{{1, 2, 3, 4, 5}},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Collect(tt.items).Chunk(tt.size)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect().Chunk() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCollection_Sum(t *testing.T) {
+	type Args[V comparable] struct {
+		name  string
+		items []V
+		want  int
+	}
+
+	for _, tt := range []Args[int]{
+		{
+			name:  "Int_1",
+			items: []int{1},
+			want:  1,
+		},
+		{
+			name:  "Int_2",
+			items: []int{1, 2},
+			want:  3,
+		},
+		{
+			name:  "Int_3",
+			items: []int{1, 2, 3},
+			want:  6,
+		},
+		{
+			name:  "Int_4",
+			items: []int{1, 2, 3, 4, 5},
+			want:  15,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Collect(tt.items).Sum(func(v int) int {
+				return v
+			})
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect().Sum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCollection_Avg(t *testing.T) {
+	type Args[V comparable] struct {
+		name  string
+		items []V
+		want  int
+	}
+
+	for _, tt := range []Args[int]{
+		{
+			name:  "Int_1",
+			items: []int{1},
+			want:  1,
+		},
+		{
+			name:  "Int_2",
+			items: []int{1, 2},
+			want:  1,
+		},
+		{
+			name:  "Int_3",
+			items: []int{1, 2, 3},
+			want:  2,
+		},
+		{
+			name:  "Int_4",
+			items: []int{1, 2, 3, 4, 5},
+			want:  3,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Collect(tt.items).Avg(func(v int) int {
+				return v
+			})
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect().Avg() = %v, want %v", got, tt.want)
 			}
 		})
 	}

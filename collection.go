@@ -87,10 +87,8 @@ func (c *Collection[V]) Filter(predicate func(value V, k int) bool) *Collection[
 // Output
 
 func (c *Collection[V]) ToSlice() []V {
-	var items = make([]V, len(c.items))
-	for idx := range c.items {
-		items[idx] = c.items[idx]
-	}
+	items := make([]V, len(c.items))
+	copy(items, c.items)
 	return items
 }
 
