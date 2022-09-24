@@ -8,7 +8,7 @@ func Collect[V comparable](items []V) *Collection[V] {
 	return &Collection[V]{items: items}
 }
 
-func (c *Collection[V]) Append(items []V) *Collection[V] {
+func (c *Collection[V]) Merge(items []V) *Collection[V] {
 	var cNew = &Collection[V]{items: make([]V, len(c.items))}
 	for idx := range c.items {
 		cNew.items[idx] = c.items[idx]

@@ -32,7 +32,7 @@ func TestCollection_Collect(t *testing.T) {
 	}
 }
 
-func TestCollection_Append(t *testing.T) {
+func TestCollection_Merge(t *testing.T) {
 	type Args[V comparable] struct {
 		name  string
 		items []V
@@ -55,8 +55,8 @@ func TestCollection_Append(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Collect(tt.items).Append(tt.input); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Collect.Append() = %v, want %v", got, tt.want)
+			if got := Collect(tt.items).Merge(tt.input); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect.Merge() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -73,8 +73,8 @@ func TestCollection_Append(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Collect(tt.items).Append(tt.input); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Collect.Append() = %v, want %v", got, tt.want)
+			if got := Collect(tt.items).Merge(tt.input); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect.Merge() = %v, want %v", got, tt.want)
 			}
 		})
 	}
