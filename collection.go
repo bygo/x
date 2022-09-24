@@ -8,6 +8,31 @@ func Collect[V comparable](items []V) *Collection[V] {
 	return &Collection[V]{items: items}
 }
 
+func (c *Collection[V]) Append(items []V) *Collection[V] {
+	var cNew = &Collection[V]{items: make([]V, len(c.items))}
+	for idx := range c.items {
+		cNew.items[idx] = c.items[idx]
+	}
+	cNew.items = append(cNew.items, items...)
+	return cNew
+}
+
+func (c *Collection[V]) Replace(old V, new V, n int) *Collection[V] {
+	var cNew = &Collection[V]{items: make([]V, len(c.items))}
+	copy(cNew.items, c.items)
+	for idx := range cNew.items {
+		if n == 0 {
+			break
+		}
+
+		if cNew.items[idx] == old {
+			cNew.items[idx] = new
+			n--
+		}
+	}
+	return cNew
+}
+
 func (c *Collection[V]) Diff(items []V) *Collection[V] {
 	itemMp := map[V]struct{}{}
 	for _, item := range items {
@@ -39,15 +64,6 @@ func (c *Collection[V]) Map(iteratee func(value V, key int) V) *Collection[V] {
 	return cNew
 }
 
-func (c *Collection[V]) Append(items []V) *Collection[V] {
-	var cNew = &Collection[V]{items: make([]V, len(c.items))}
-	for idx := range c.items {
-		cNew.items[idx] = c.items[idx]
-	}
-	cNew.items = append(cNew.items, items...)
-	return cNew
-}
-
 func (c *Collection[V]) Filter(predicate func(value V, k int) bool) *Collection[V] {
 	var cNew = &Collection[V]{items: make([]V, len(c.items))}
 	for k, v := range c.items {
@@ -58,6 +74,8 @@ func (c *Collection[V]) Filter(predicate func(value V, k int) bool) *Collection[
 	}
 	return cNew
 }
+
+// Output
 
 func (c *Collection[V]) ToSlice() []V {
 	var items = make([]V, len(c.items))
@@ -80,6 +98,8 @@ func (c *Collection[V]) Chunk(size int) [][]V {
 	}
 	return chunks
 }
+
+// Statistic
 
 func (c *Collection[V]) Sum(iteratee func(value V) int) int {
 	itemsL := len(c.items)
