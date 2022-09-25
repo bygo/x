@@ -1,6 +1,7 @@
 package x
 
 import (
+	"math"
 	"reflect"
 	"testing"
 )
@@ -170,6 +171,54 @@ func TestCollection_Diff(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := Collect(tt.items).Diff(tt.input); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect().Replace() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+
+	type User struct {
+		ID int
+	}
+	for _, tt := range []Args[User]{
+		{
+			name:  "Struct_1",
+			items: []User{{1}, {2}},
+			input: []User{{1}},
+			want:  Collect([]User{{2}}),
+		},
+		{
+			name:  "Struct_2",
+			items: []User{{1}, {1}, {3}, {1}},
+			input: []User{{3}},
+			want:  Collect([]User{{1}, {1}, {1}}),
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Collect(tt.items).Diff(tt.input); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect().Diff() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCollection_DiffBy(t *testing.T) {
+	type Args[V comparable] struct {
+		name  string
+		items []V
+		input []V
+		want  *Collection[V]
+	}
+
+	for _, tt := range []Args[float64]{
+		{
+			name:  "Int_1",
+			items: []float64{1.1, 2.9, 3.1, 5.55},
+			input: []float64{5.1, 2.7},
+			want:  Collect([]float64{1.1, 3.1}),
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Collect(tt.items).DiffBy(tt.input, math.Floor); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Collect().Replace() = %v, want %v", got, tt.want)
 			}
 		})
@@ -474,6 +523,39 @@ func TestCollection_Avg(t *testing.T) {
 			})
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Collect().Avg() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCollection_Reverse(t *testing.T) {
+	type Args[V comparable] struct {
+		name  string
+		items []V
+		want  []V
+	}
+
+	for _, tt := range []Args[int]{
+		{
+			name:  "Int_1",
+			items: []int{1},
+			want:  []int{1},
+		},
+		{
+			name:  "Int_2",
+			items: []int{1, 2},
+			want:  []int{2, 1},
+		},
+		{
+			name:  "Int_3",
+			items: []int{1, 2, 3},
+			want:  []int{3, 2, 1},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Collect(tt.items).Reverse().ToSlice()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Collect().Reverse() = %v, want %v", got, tt.want)
 			}
 		})
 	}
